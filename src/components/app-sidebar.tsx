@@ -1,13 +1,4 @@
-import {
-  Calendar,
-  Home,
-  Inbox,
-  Search,
-  Settings,
-  Book,
-  LayoutDashboardIcon,
-  Map,
-} from "lucide-react";
+import { Home, Book, LayoutDashboardIcon, Map, Atom, Wind } from "lucide-react";
 
 import {
   Sidebar,
@@ -18,7 +9,15 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarMenuSub,
+  SidebarMenuSubButton,
+  SidebarMenuSubItem,
 } from "@/components/ui/sidebar";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "./ui/collapsible";
 
 // Menu items.
 const items = [
@@ -36,11 +35,6 @@ const items = [
     title: "Dashboard",
     url: "./dashboard",
     icon: LayoutDashboardIcon,
-  },
-  {
-    title: "Map",
-    url: "./map",
-    icon: Map,
   },
 ];
 
@@ -62,6 +56,38 @@ export function AppSidebar() {
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
+              <SidebarMenu>
+                <Collapsible defaultOpen className="group/collapsible">
+                  <SidebarMenuItem>
+                    <CollapsibleTrigger asChild>
+                      <SidebarMenuButton>
+                        <Map />
+                        <span>Map</span>
+                      </SidebarMenuButton>
+                    </CollapsibleTrigger>
+                    <CollapsibleContent>
+                      <SidebarMenuSub>
+                        <SidebarMenuSubItem>
+                          <SidebarMenuSubButton asChild>
+                            <a href="./map-co2">
+                              <Atom />
+                              <span>PM2.5</span>
+                            </a>
+                          </SidebarMenuSubButton>
+                        </SidebarMenuSubItem>
+                        <SidebarMenuSubItem>
+                          <SidebarMenuSubButton asChild>
+                            <a href="./map-pm25">
+                              <Wind />
+                              <span>Carbon Dioxide</span>
+                            </a>
+                          </SidebarMenuSubButton>
+                        </SidebarMenuSubItem>
+                      </SidebarMenuSub>
+                    </CollapsibleContent>
+                  </SidebarMenuItem>
+                </Collapsible>
+              </SidebarMenu>
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
