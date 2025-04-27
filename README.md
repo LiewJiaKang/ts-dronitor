@@ -1,54 +1,117 @@
-# React + TypeScript + Vite
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+# ts-dronitor
 
-Currently, two official plugins are available:
+**ts-dronitor** is a TypeScript-based drone environmental monitoring platform, built with modern front-end technologies including React, Leaflet JS for mapping, and Shadcn UI for components.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Table of Contents
 
-## Expanding the ESLint configuration
+- [Overview](#overview)
+- [Features](#features)
+- [Tech Stack](#tech-stack)
+- [Getting Started](#getting-started)
+- [Project Structure](#project-structure)
+- [Contributing](#contributing)
+- [License](#license)
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+---
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+## Overview
+
+**ts-dronitor** provides an interactive map-based interface for monitoring environmental data collected by drones. It aims to assist in visualizing and analyzing spatial environmental information efficiently.
+
+---
+
+## Features
+
+- 🗺️ **Interactive Maps**: Real-time map visualization powered by Leaflet JS.
+- 🎛️ **Modern UI**: Built with Shadcn UI for a clean and responsive design.
+- ⚡ **High Performance**: Powered by Vite for fast development and optimized builds.
+- 🔧 **Developer Friendly**: Fully typed with TypeScript and linted with ESLint.
+
+---
+
+## Tech Stack
+
+- **Frontend**: React + TypeScript
+- **Mapping Library**: Leaflet JS
+- **UI Components**: Shadcn UI
+- **Bundler**: Vite
+- **Linting**: ESLint
+
+---
+
+## Getting Started
+
+Follow these steps to set up the project locally.
+
+### Prerequisites
+
+Ensure you have the following installed:
+
+- [Node.js](https://nodejs.org/) (version 18 or higher recommended)
+- npm (comes with Node.js)
+
+### Installation
+
+1. **Clone the repository:**
+
+   ```bash
+   git clone https://github.com/LiewJiaKang/ts-dronitor.git
+   cd ts-dronitor
+   ```
+
+2. **Install dependencies:**
+
+   ```bash
+   npm install
+   ```
+
+3. **Start the development server:**
+
+   ```bash
+   npm run dev
+   ```
+
+4. **Open your browser:**
+
+   Visit [http://localhost:5173](http://localhost:5173) to view the application.
+
+---
+
+## Project Structure
+
+```bash
+ts-dronitor/
+├── public/              # Static assets
+├── src/                 # Application source code
+│   ├── components/      # React components
+│   ├── hooks/           # Custom React hooks
+│   ├── pages/           # Page components
+│   ├── utils/           # Utility functions
+│   └── main.tsx         # Application entry point
+├── .eslintrc.js         # ESLint configuration
+├── tsconfig.json        # TypeScript configuration
+├── vite.config.ts       # Vite configuration
+└── README.md            # Project documentation
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+---
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## Contributing
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
-```
+Contributions are welcome and appreciated.  
+To contribute:
+
+1. Fork the repository.
+2. Create a new branch (`git checkout -b feature/your-feature-name`).
+3. Commit your changes (`git commit -m 'Add new feature'`).
+4. Push to the branch (`git push origin feature/your-feature-name`).
+5. Create a Pull Request.
+
+Please ensure your code adheres to the existing style and passes all linting checks.
+
+---
+
+## License
+
+This project is licensed under the [MIT License](LICENSE).
