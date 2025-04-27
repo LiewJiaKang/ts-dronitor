@@ -21,7 +21,11 @@ function MapCo() {
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
       <Marker position={[1.50928, 103.851718]}></Marker>
-      <HeatmapLayer latlngs={points.map((p) => [p[0], p[1]])} />
+      <HeatmapLayer
+        latlngs={points
+          .map((p) => (p[2] > 200 ? [p[0], p[1]] : null))
+          .filter((item) => item != null)}
+      />
     </MapContainer>
   );
 }

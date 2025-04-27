@@ -9,23 +9,26 @@ import Documentation from "./Documentation.tsx";
 import Dashboard from "./Dashboard.tsx";
 import MapCo from "./MapCo2.tsx";
 import MapPm from "./MapPm25.tsx";
+import { ThemeProvider } from "./components/theme-provider.tsx";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <SidebarProvider>
-      <AppSidebar />
-      <main className="w-full">
-        <SidebarTrigger />
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<App />} />
-            <Route path="map-co2" element={<MapCo />} />
-            <Route path="map-pm25" element={<MapPm />} />
-            <Route path="dashboard" element={<Dashboard />} />
-            <Route path="documentation" element={<Documentation />} />
-          </Routes>
-        </BrowserRouter>
-      </main>
-    </SidebarProvider>
+    <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+      <SidebarProvider>
+        <AppSidebar />
+        <main className="w-full">
+          <SidebarTrigger />
+          <BrowserRouter>
+            <Routes>
+              <Route path="/" element={<App />} />
+              <Route path="map-co2" element={<MapCo />} />
+              <Route path="map-pm25" element={<MapPm />} />
+              <Route path="dashboard" element={<Dashboard />} />
+              <Route path="documentation" element={<Documentation />} />
+            </Routes>
+          </BrowserRouter>
+        </main>
+      </SidebarProvider>
+    </ThemeProvider>
   </StrictMode>,
 );
