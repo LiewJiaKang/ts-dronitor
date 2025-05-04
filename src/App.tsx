@@ -3,7 +3,7 @@ import { Button } from "./components/ui/button";
 function App() {
   return (
     <div className="w-full h-full flex justify-center items-center">
-      <div className="w-full sm:w-1/2">
+      <div className="w-full sm:w-1/2 m-5">
         <h1 className="text-[64px]">Dronitor</h1>
         <p>
           Dronitor is an innovative drone-based system designed to detect and

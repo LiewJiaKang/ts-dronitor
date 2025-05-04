@@ -69,7 +69,7 @@ export function AppSidebar() {
                       <SidebarMenuSub>
                         <SidebarMenuSubItem>
                           <SidebarMenuSubButton asChild>
-                            <a href="./map-co2">
+                            <a href="./map-pm25">
                               <Atom />
                               <span>PM2.5</span>
                             </a>
@@ -77,9 +77,9 @@ export function AppSidebar() {
                         </SidebarMenuSubItem>
                         <SidebarMenuSubItem>
                           <SidebarMenuSubButton asChild>
-                            <a href="./map-pm25">
+                            <a href="./map-aqi">
                               <Wind />
-                              <span>Carbon Dioxide</span>
+                              <span>Air Quality Index</span>
                             </a>
                           </SidebarMenuSubButton>
                         </SidebarMenuSubItem>

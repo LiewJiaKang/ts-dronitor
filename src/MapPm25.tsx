@@ -1,7 +1,6 @@
 import { MapContainer, Marker, TileLayer } from "react-leaflet";
-import HeatmapLayer from "react-leaflet-heat-layer";
 import { loadAddressPoints } from "./data.ts";
-import "./MapCo2.css";
+import "./MapPm25.css";
 import { useEffect, useState } from "react";
 
 function MapCo() {
@@ -21,7 +20,6 @@ function MapCo() {
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
       <Marker position={[1.50928, 103.851718]}></Marker>
-      <HeatmapLayer latlngs={points.map(([lat, lng, _], __) => [lat, lng])} />
     </MapContainer>
   );
 }

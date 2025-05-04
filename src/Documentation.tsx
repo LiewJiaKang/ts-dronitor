@@ -37,7 +37,8 @@ The system workflow is:
 | Frontend                | React + TypeScript                   |
 | Mapping                 | Leaflet JS                           |
 | Data Visualization      | Shadcn UI, Recharts (for bar charts) |
-| AI Module (Optional)    | Local processing / frontend summarization |
+| AI Module               | GROQ Cloud (AI API integration)      |
+| Reverse Geocoding       | OpenCage (Location name resolution)  |
 | Build Tool              | Vite                                 |
 | Backend Data Handling   | Python (Serial Communication, File Writing) |
 | Server                  | Python HTTP Server (started via systemd) |
@@ -125,7 +126,8 @@ npm run build
  - **Interactive Map (Leaflet)**:
    - Displays real-time geospatial air quality data.
 
- - **AI Overview**:
+ - **AI Overview (GROQ Cloud + OpenCage)**:
+   - Pre-processes coordinates into readable locations (OpenCage).
    - Provides quick summaries and trends from sensor readings.
 
  - **Raw Data Table**:
@@ -149,7 +151,7 @@ npm run build
         `;
   return (
     <div className="w-full flex flex-col items-center justify-center pt-5">
-      <article className="prose prose-invert">
+      <article className="prose dark:prose-invert text-pretty w-full px-[20px]">
         <Markdown remarkPlugins={[remarkGfm]}>{markdownText}</Markdown>
       </article>
     </div>

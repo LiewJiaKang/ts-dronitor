@@ -1,5 +1,6 @@
 import OpenAI from "openai";
-import points from "/data/points.txt?url";
+import geojsonData from "/malaysia.district.geojson?url";
+import pointsUrl from "/data/points.txt?url";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import {
@@ -18,16 +19,14 @@ import {
   CardTitle,
 } from "./components/ui/card";
 import { Skeleton } from "./components/ui/skeleton";
-import { useState } from "react";
-import OpenCage from "opencage-api-client";
+import { useEffect, useState } from "react";
 import { AQIBarChart } from "./components/aqi-chart";
-
-type Record = { lat: number; lon: number; aqi: number };
-type Enriched = Record & { state: string; district: string };
+import { getEnrichedData, Enriched } from "./utils/enrichData";
 
 export default function Dashboard() {
   const [response, setResponse] = useState<string>("");
   const [prompting, setPrompting] = useState<boolean>(false);
+  const [enriched, setEnriched] = useState<Enriched[]>([]);
 
   const client = new OpenAI({
     apiKey: import.meta.env.VITE_AI_API_KEY,
@@ -35,112 +34,61 @@ export default function Dashboard() {
     dangerouslyAllowBrowser: true,
   });
 
-  async function getAIPrompt() {
-    if (response || prompting) return;
-    setPrompting(true); // Moved up early
+  useEffect(() => {
+    async function fetchAndPrompt() {
+      const data = await getEnrichedData(pointsUrl, geojsonData);
+      setEnriched(data);
 
-    const cached = localStorage.getItem("enriched");
-    let data: string;
+      if (response || prompting) return;
+      setPrompting(true);
 
-    if (!cached) {
-      const raw = await fetch(points).then((r) => r.text());
+      const prompt = `Analyze these Malaysia air-quality readings (lat, lon, aqi) with location names attached using tables (Important! You must use tables.) for "AI overview" for a dashboard. You do not need to provide any code examples or way to analyze the data. Start your response with a brief summary(with the title being the largest heading) of the data and then provide a detailed analysis of the air quality in each location.\n${JSON.stringify(data)}`;
 
-      const recs: Record[] = raw
-        .trim()
-        .split("\n")
-        .map((line) => {
-          const [lat, lon, aqi] = line.split(",").map((s) => s.trim());
-          return { lat: +lat, lon: +lon, aqi: +aqi };
-        });
+      const completion = await client.chat.completions.create({
+        model: "meta-llama/llama-4-scout-17b-16e-instruct",
+        messages: [{ role: "user", content: prompt }],
+      });
 
-      const enriched: Enriched[] = [];
-
-      for (const { lat, lon, aqi } of recs) {
-        try {
-          const result = await OpenCage.geocode({
-            key: import.meta.env.VITE_OPENCAGE_KEY,
-            q: `${lat},${lon}`,
-            no_annotations: 1,
-            language: "en",
-          });
-
-          const comps = result.results[0]?.components || {};
-          enriched.push({
-            lat,
-            lon,
-            aqi,
-            state: comps.state || "",
-            district: comps.city || comps.town || comps.village || "",
-          });
-
-          // optional: small delay to avoid hitting rate limits
-          await new Promise((r) => setTimeout(r, 200));
-        } catch {
-          enriched.push({ lat, lon, aqi, state: "", district: "" });
-        }
-      }
-
-      localStorage.setItem("enriched", JSON.stringify(enriched, null, 2));
-      data = JSON.stringify(enriched);
-    } else {
-      data = cached;
+      setResponse(
+        completion.choices[0].message.content || "AI prompt not available",
+      );
     }
 
-    const prompt = `Analyze these Malaysia air-quality readings (lat, lon, aqi) with location names attached using tables (Important! You must use tables.) for "AI overview" for a dashboard. You do not need to provide any code examples or way to analyze the data.\n${data}`;
-
-    const completion = await client.chat.completions.create({
-      model: "meta-llama/llama-4-scout-17b-16e-instruct",
-      messages: [{ role: "user", content: prompt }],
-    });
-
-    setResponse(
-      completion.choices[0].message.content || "AI prompt not available",
-    );
-  }
-
-  useState(() => {
-    getAIPrompt();
-  });
+    fetchAndPrompt();
+  }, [client.chat.completions, prompting, response]);
 
   return (
     <div className="p-5">
       <div className="flex w-full gap-x-5 gap-y-5 flex-col md:flex-row">
-        <AQIBarChart
-          data={JSON.parse(localStorage.getItem("enriched") || "")}
-        ></AQIBarChart>
+        <AQIBarChart data={enriched} />
         <Card className="w-full h-[55vh] overflow-y-auto ">
           <CardHeader>
             <CardTitle>Raw data</CardTitle>
+            <CardDescription>Data provided by the drone. </CardDescription>
           </CardHeader>
           <CardContent>
             <Table>
               <TableHeader>
-                <TableHead>Lat</TableHead>
-                <TableHead>Long</TableHead>
-                <TableHead>Location</TableHead>
-                <TableHead>AQI</TableHead>
+                <TableRow>
+                  <TableHead>Lat</TableHead>
+                  <TableHead>Long</TableHead>
+                  <TableHead>Location</TableHead>
+                  <TableHead>AQI</TableHead>
+                </TableRow>
               </TableHeader>
               <TableBody>
-                {JSON.parse(localStorage.getItem("enriched") || "").map(
-                  (p: {
-                    lat: number;
-                    lon: number;
-                    aqi: number;
-                    state: string;
-                    district: string;
-                  }) => (
-                    <TableRow>
-                      <TableCell>{p.lat}</TableCell>
-                      <TableCell>{p.lon}</TableCell>
-                      <TableCell>
-                        {p.district == p.state
-                          ? p.state
-                          : p.district + ", " + p.state}
-                      </TableCell>
-                      <TableCell>{p.aqi}</TableCell>
-                    </TableRow>
-                  ),
-                )}
+                {enriched.map((p, idx) => (
+                  <TableRow key={idx}>
+                    <TableCell>{p.lat}</TableCell>
+                    <TableCell>{p.lon}</TableCell>
+                    <TableCell>
+                      {p.district === p.state
+                        ? p.state
+                        : `${p.district}, ${p.state}`}
+                    </TableCell>
+                    <TableCell>{p.aqi}</TableCell>
+                  </TableRow>
+                ))}
               </TableBody>
             </Table>
           </CardContent>
@@ -156,7 +104,7 @@ export default function Dashboard() {
         <CardContent>
           <div className="space-y-2">
             {response ? (
-              <article className="prose dark:prose-invert">
+              <article className="prose prose-sm dark:prose-invert">
                 <Markdown
                   components={{
                     table: ({ children }) => <Table>{children}</Table>,
@@ -175,7 +123,7 @@ export default function Dashboard() {
               </article>
             ) : (
               Array.from({ length: 4 }).map((_, i) => (
-                <Skeleton key={i} className="h-4 w-[250px] bg-gray-400" />
+                <Skeleton key={i} className="h-4" />
               ))
             )}
           </div>

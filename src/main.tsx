@@ -7,7 +7,7 @@ import { AppSidebar } from "./components/app-sidebar.tsx";
 import App from "./App.tsx";
 import Documentation from "./Documentation.tsx";
 import Dashboard from "./Dashboard.tsx";
-import MapCo from "./MapCo2.tsx";
+import MapAQI from "./MapAQI.tsx";
 import MapPm from "./MapPm25.tsx";
 import { ThemeProvider } from "./components/theme-provider.tsx";
 
@@ -21,7 +21,7 @@ createRoot(document.getElementById("root")!).render(
           <BrowserRouter>
             <Routes>
               <Route path="/" element={<App />} />
-              <Route path="map-co2" element={<MapCo />} />
+              <Route path="map-aqi" element={<MapAQI />} />
               <Route path="map-pm25" element={<MapPm />} />
               <Route path="dashboard" element={<Dashboard />} />
               <Route path="documentation" element={<Documentation />} />
