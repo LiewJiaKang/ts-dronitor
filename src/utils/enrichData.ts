@@ -11,8 +11,9 @@ type GeoFeature = Feature<
 export async function getEnrichedData(
   pointsUrl: string,
   geojsonUrl: string,
+  storageKey: string,
 ): Promise<Enriched[]> {
-  const cached = localStorage.getItem("enriched");
+  const cached = localStorage.getItem(storageKey);
   if (cached) {
     return JSON.parse(cached) as Enriched[];
   }
@@ -51,6 +52,6 @@ export async function getEnrichedData(
     enriched.push({ lat, lon, aqi, state, district });
   }
 
-  localStorage.setItem("enriched", JSON.stringify(enriched, null, 2));
+  localStorage.setItem(storageKey, JSON.stringify(enriched, null, 2));
   return enriched;
 }

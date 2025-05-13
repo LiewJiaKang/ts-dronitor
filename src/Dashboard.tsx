@@ -1,16 +1,16 @@
-import OpenAI from "openai";
-import geojsonData from "/malaysia.district.geojson?url";
-import pointsUrl from "/data/points.txt?url";
-import Markdown from "react-markdown";
-import remarkGfm from "remark-gfm";
 import {
   Table,
-  TableHeader,
   TableBody,
-  TableRow,
-  TableHead,
   TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
 } from "@/components/ui/table";
+import OpenAI from "openai";
+import { useEffect, useState } from "react";
+import Markdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+import { AQIBarChart } from "./components/aqi-chart";
 import {
   Card,
   CardContent,
@@ -19,9 +19,9 @@ import {
   CardTitle,
 } from "./components/ui/card";
 import { Skeleton } from "./components/ui/skeleton";
-import { useEffect, useState } from "react";
-import { AQIBarChart } from "./components/aqi-chart";
-import { getEnrichedData, Enriched } from "./utils/enrichData";
+import { Enriched, getEnrichedData } from "./utils/enrichData";
+import pointsUrl from "/data/points.txt?url";
+import geojsonData from "/malaysia.district.geojson?url";
 
 export default function Dashboard() {
   const [response, setResponse] = useState<string>("");
@@ -36,7 +36,7 @@ export default function Dashboard() {
 
   useEffect(() => {
     async function fetchAndPrompt() {
-      const data = await getEnrichedData(pointsUrl, geojsonData);
+      const data = await getEnrichedData(pointsUrl, geojsonData, "enrichedaqi");
       setEnriched(data);
 
       if (response || prompting) return;
@@ -60,7 +60,7 @@ export default function Dashboard() {
   return (
     <div className="p-5">
       <div className="flex w-full gap-x-5 gap-y-5 flex-col md:flex-row">
-        <AQIBarChart data={enriched} />
+        {enriched.length ? <AQIBarChart data={enriched} /> : <></>}
         <Card className="w-full h-[55vh] overflow-y-auto ">
           <CardHeader>
             <CardTitle>Raw data</CardTitle>

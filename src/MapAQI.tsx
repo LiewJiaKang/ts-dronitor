@@ -1,8 +1,9 @@
-import { MapContainer, TileLayer, GeoJSON } from "react-leaflet";
-import { useEffect, useState } from "react";
-import { getEnrichedData, Enriched } from "./utils/enrichData";
-import "./MapAQI.css";
 import { FeatureCollection } from "geojson";
+import { useEffect, useState } from "react";
+import { GeoJSON, MapContainer, TileLayer } from "react-leaflet";
+import { LegendControl } from "./components/aqilegend.tsx";
+import "./MapAQI.css";
+import { Enriched, getEnrichedData } from "./utils/enrichData";
 
 export default function MapAQI() {
   const [geoData, setGeoData] = useState<FeatureCollection | null>(null);
@@ -15,6 +16,7 @@ export default function MapAQI() {
       const enriched = await getEnrichedData(
         "/data/points.txt",
         "/malaysia.district.geojson",
+        "enrichedaqi",
       );
       const aqiMap = computeAqiMap(enriched);
       setAqiMap(aqiMap);
@@ -63,24 +65,18 @@ export default function MapAQI() {
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
       {geoData && <GeoJSON data={geoData} style={style} />}
+      <LegendControl />
     </MapContainer>
   );
 }
 
-function getColor(aqi: number) {
-  return aqi > 200
-    ? "#800026"
-    : aqi > 150
-      ? "#BD0026"
-      : aqi > 100
-        ? "#E31A1C"
-        : aqi > 50
-          ? "#FC4E2A"
-          : aqi > 25
-            ? "#FD8D3C"
-            : aqi > 10
-              ? "#FEB24C"
-              : "#FFEDA0";
+function getColor(aqi: number): string {
+  if (aqi > 300) return "#7E0023"; // Hazardous
+  if (aqi > 200) return "#8F3F97"; // Very Unhealthy
+  if (aqi > 150) return "#FF0000"; // Unhealthy
+  if (aqi > 100) return "#FF7E00"; // Unhealthy for Sensitive Groups
+  if (aqi > 50) return "#FFFF00"; // Moderate
+  return "#00E400"; // Good
 }
 
 function computeAqiMap(
