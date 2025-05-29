@@ -38,7 +38,6 @@ The system workflow is:
 | Mapping                 | Leaflet JS                           |
 | Data Visualization      | Shadcn UI, Recharts (for bar charts) |
 | AI Module               | GROQ Cloud (AI API integration)      |
-| Reverse Geocoding       | OpenCage (Location name resolution)  |
 | Build Tool              | Vite                                 |
 | Backend Data Handling   | Python (Serial Communication, File Writing) |
 | Server                  | Python HTTP Server (started via systemd) |
@@ -126,8 +125,7 @@ npm run build
  - **Interactive Map (Leaflet)**:
    - Displays real-time geospatial air quality data.
 
- - **AI Overview (GROQ Cloud + OpenCage)**:
-   - Pre-processes coordinates into readable locations (OpenCage).
+ - **AI Overview (GROQ Cloud)**:
    - Provides quick summaries and trends from sensor readings.
 
  - **Raw Data Table**:
@@ -136,7 +134,7 @@ npm run build
  - **Bar Chart Visualization**:
    - Compares different AQI indices for PM1.0, PM2.5, PM10, and gas concentrations.
 
- ---
+---
 
 ## Future Enhancements
 
@@ -145,10 +143,11 @@ npm run build
  - Enable alerting based on threshold exceedance (e.g., high PM2.5 levels).
  - Expand AI module for predictive analytics.
 
- ---
+---
 
 # End of Documentation
-        `;
+  `;
+
   return (
     <div className="w-full flex flex-col items-center justify-center pt-5">
       <article className="prose dark:prose-invert text-pretty w-full px-[20px]">
