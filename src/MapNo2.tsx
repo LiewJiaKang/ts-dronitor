@@ -1,32 +1,28 @@
 import { FeatureCollection } from "geojson";
 import { useEffect, useState } from "react";
-import {
-  CircleMarker,
-  GeoJSON,
-  LayersControl,
-  MapContainer,
-  TileLayer,
-  LayerGroup,
-} from "react-leaflet";
+import { CircleMarker, GeoJSON, LayerGroup, LayersControl, MapContainer, TileLayer } from "react-leaflet";
 const { BaseLayer } = LayersControl;
-import { LegendControl } from "./components/aqilegend.tsx";
-import "./MapAQI.css";
+import { LegendControl } from "./components/No2legend.tsx";
+import "./MapNo2.css";
 import { Enriched, getEnrichedData } from "./utils/enrichData";
 
-export default function MapAQI() {
+
+export default function MapNo2() {
   const [geoData, setGeoData] = useState<FeatureCollection | null>(null);
-  const [aqiMap, setAqiMap] = useState<Record<string, { count: number; total: number }>>({});
+  const [no2Map, setNo2Map] = useState<
+    Record<string, { count: number; total: number }>
+  >({});
   const [enrichedPoints, setEnrichedPoints] = useState<Enriched[]>([]);
 
   useEffect(() => {
     async function fetchData() {
       const enriched = await getEnrichedData(
-        "/data/points.txt",
+        "/data/points2.txt",
         "/malaysia.district.geojson",
-        "enrichedaqi"
+        "enrichedNo2",
       );
-      const aqiMap = computeAqiMap(enriched);
-      setAqiMap(aqiMap);
+      const No2Map = computeNo2Map(enriched);
+      setNo2Map(No2Map);
       setEnrichedPoints(enriched); // store point data for CircleMarkers
     }
 
@@ -48,11 +44,11 @@ export default function MapAQI() {
       feature.properties.city ||
       "";
 
-    const entry = aqiMap[name];
+    const entry = no2Map[name];
     const avg = entry ? entry.total / entry.count : 0;
 
     return {
-      fillColor: getColor(avg),
+      fillColor: getNo2Color(avg),
       weight: 1,
       opacity: 1,
       color: "white",
@@ -72,7 +68,8 @@ export default function MapAQI() {
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
-      <LayersControl position="topright">
+      
+<LayersControl position="topright">
         <BaseLayer name="Choropleth map" checked>
           {geoData && <GeoJSON data={geoData} style={style} />}
         </BaseLayer>
@@ -84,8 +81,8 @@ export default function MapAQI() {
                 key={idx}
                 center={[point.lat, point.lon]}
                 radius={6}
-                fillColor={getColor(point.aqi)}
-                color={getColor(point.aqi)}
+                fillColor={getNo2Color(point.aqi)}
+                color={getNo2Color(point.aqi)}
                 fillOpacity={0.7}
                 stroke={false}
               >
@@ -95,21 +92,26 @@ export default function MapAQI() {
         </BaseLayer>
       </LayersControl>
 
-      <LegendControl />
+
+
+      <LegendControl></LegendControl>
     </MapContainer>
   );
 }
 
-function getColor(aqi: number): string {
-  if (aqi > 300) return "#7E0023"; // Hazardous
-  if (aqi > 200) return "#8F3F97"; // Very Unhealthy
-  if (aqi > 150) return "#FF0000"; // Unhealthy
-  if (aqi > 100) return "#FF7E00"; // Unhealthy for Sensitive Groups
-  if (aqi > 50) return "#FFFF00"; // Moderate
-  return "#00E400"; // Good
+
+// NO2 (Nitrogen Dioxide) 1-hour mean (ppb) - Example breakpoints:
+// 0-53: Good, 54-100: Moderate, 101-360: Unhealthy for Sensitive Groups, 361-649: Unhealthy, 650-1249: Very Unhealthy, 1250+: Hazardous
+function getNo2Color(no2: number): string {
+  if (no2 > 1249) return "#7E0023"; // Hazardous
+  if (no2 > 649) return "#660099"; // Very Unhealthy
+  if (no2 > 360) return "#CC0033"; // Unhealthy
+  if (no2 > 100) return "#FF9933"; // Unhealthy for Sensitive Groups
+  if (no2 > 53) return "#FFDE33"; // Moderate
+  return "#009966"; // Good
 }
 
-function computeAqiMap(
+function computeNo2Map(
   enriched: Enriched[],
 ): Record<string, { count: number; total: number }> {
   const map: Record<string, { count: number; total: number }> = {};

@@ -30,7 +30,7 @@ const Legend = Control.extend({
     ];
 
     div.innerHTML =
-      `<div class="font-semibold mb-1">PM2.5 (µg/m³)</div>` +
+      `<div class="font-semibold mb-1">NO₂ (µg/m³)</div>` +
       ranges
         .map(
           (r) => `

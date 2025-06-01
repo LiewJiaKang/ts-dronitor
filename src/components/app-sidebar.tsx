@@ -69,9 +69,9 @@ export function AppSidebar() {
                       <SidebarMenuSub>
                         <SidebarMenuSubItem>
                           <SidebarMenuSubButton asChild>
-                            <a href="./map-pm25">
+                            <a href="./map-no2">
                               <Atom />
-                              <span>PM2.5</span>
+                              <span>Nitrogen Dioxide</span>
                             </a>
                           </SidebarMenuSubButton>
                         </SidebarMenuSubItem>
